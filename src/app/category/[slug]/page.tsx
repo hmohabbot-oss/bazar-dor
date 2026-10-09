@@ -31,7 +31,12 @@ export default function CategoryPage({ params }: PageProps) {
   const categoryInfo = categoryTitles[slug];
 
   useEffect(() => {
-    async function fetchCategoryData() {
+    let ignore = false;
+    async function loadData() {
+      if (!categoryInfo) {
+        setLoading(false);
+        return;
+      }
       try {
         setLoading(true);
         const res = await fetch(
@@ -39,22 +44,20 @@ export default function CategoryPage({ params }: PageProps) {
         );
         if (res.ok) {
           const data = await res.json();
-          setProducts(data);
+          if (!ignore) setProducts(data);
         } else {
-          setProducts([]);
+          if (!ignore) setProducts([]);
         }
       } catch {
-        setProducts([]);
+        if (!ignore) setProducts([]);
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     }
-
-    if (categoryInfo) {
-      fetchCategoryData();
-    } else {
-      setLoading(false);
-    }
+    loadData();
+    return () => {
+      ignore = true;
+    };
   }, [slug, categoryInfo]);
 
   // সর্ট করা প্রোডাক্ট তালিকা (C1 Challenge)

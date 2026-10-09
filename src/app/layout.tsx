@@ -5,8 +5,10 @@ import { Toaster } from "react-hot-toast";
 
 // বাংলা ফন্ট সেটআপ
 const hindSiliguri = Hind_Siliguri({
-  subsets: ["bengali"],
-  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-bangla",
+  display: "swap",
 });
 
 // অ্যাসাইনমেন্ট রিকোয়ারমেন্ট অনুযায়ী মেটাডাটা
@@ -22,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="bn">
-      <body className={hindSiliguri.className}>
+      <body className={hindSiliguri.variable}>
         {/* টোস্ট নোটিফিকেশন যেন পুরো ওয়েবসাইটে কাজ করে */}
         <Toaster position="top-right" />
         {children}

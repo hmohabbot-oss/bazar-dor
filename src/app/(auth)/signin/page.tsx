@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const requestedCallback = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = requestedCallback.startsWith("/") && !requestedCallback.startsWith("//") ? requestedCallback : "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,10 +46,11 @@ export default function SignInPage() {
 
   const handleSocialSignIn = async (provider: "google" | "github") => {
     try {
-      await signIn.social({
+      const result = await signIn.social({
         provider,
         callbackURL: callbackUrl,
       });
+      if (result.error) toast.error(result.error.message || `${provider} দিয়ে লগইন করা যায়নি`);
     } catch {
       toast.error(`${provider} দিয়ে লগইন করা যায়নি`);
     }
@@ -141,5 +143,13 @@ export default function SignInPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" aria-label="লোড হচ্ছে" />}>
+      <SignInForm />
+    </Suspense>
   );
 }

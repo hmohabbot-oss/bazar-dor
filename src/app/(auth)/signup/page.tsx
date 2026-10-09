@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signUp, signIn } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 export default function SignUpPage() {
@@ -23,20 +23,20 @@ export default function SignUpPage() {
 
     setLoading(true);
     try {
-      const res = await signUp.email({
+      const { data, error } = await authClient.signUp.email({
         name,
         email,
         password,
       });
 
-      if (res.error) {
-        toast.error(res.error.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে");
+      if (error) {
+        toast.error(error.message || "রেজিস্ট্রেশন ব্যর্থ হয়েছে");
       } else {
-        toast.success("অ্যাকাউন্ট তৈরি সম্পন্ন হয়েছে! অনুগ্রহ করে লগইন করুন।");
+        toast.success("অ্যাকাউন্ট তৈরি সম্পন্ন হয়েছে!");
         router.push("/signin");
       }
-    } catch {
-      toast.error("সার্ভার সমস্যা, পুনরায় চেষ্টা করুন");
+    } catch (err: any) {
+      toast.error(err?.message || "সার্ভার সংযোগ সমস্যা");
     } finally {
       setLoading(false);
     }
@@ -44,12 +44,13 @@ export default function SignUpPage() {
 
   const handleSocialSignUp = async (provider: "google" | "github") => {
     try {
-      await signIn.social({
+      const result = await authClient.signIn.social({
         provider,
         callbackURL: "/",
       });
+      if (result.error) toast.error(result.error.message || `${provider} সংযোগ ব্যর্থ হয়েছে`);
     } catch {
-      toast.error(`${provider} দিয়ে সাইন আপ করা যায়নি`);
+      toast.error(`${provider} সংযোগ ব্যর্থ হয়েছে`);
     }
   };
 
@@ -77,7 +78,7 @@ export default function SignUpPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="যেমন: রহিম আহমেদ"
+              placeholder="যেমন: মনির আলী"
               className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
@@ -91,7 +92,7 @@ export default function SignUpPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@mail.com"
+              placeholder="monir@gmail.com"
               className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
@@ -105,8 +106,9 @@ export default function SignUpPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড"
+              placeholder="কমপক্ষে ৮ অক্ষরের পাসওয়ার্ড"
               className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              minLength={8}
               required
             />
           </div>
@@ -114,7 +116,7 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition disabled:opacity-50"
+            className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition disabled:opacity-50 cursor-pointer"
           >
             {loading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "সাইন আপ"}
           </button>
@@ -133,14 +135,14 @@ export default function SignUpPage() {
           <button
             type="button"
             onClick={() => handleSocialSignUp("google")}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800 transition cursor-pointer"
           >
             <span>Google</span>
           </button>
           <button
             type="button"
             onClick={() => handleSocialSignUp("github")}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
+            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800 transition cursor-pointer"
           >
             <span>GitHub</span>
           </button>

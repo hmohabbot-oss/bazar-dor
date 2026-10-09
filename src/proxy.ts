@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-export async function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   const { pathname } = request.nextUrl;
-
-  // প্রোডাক্ট ডিটেইলস এবং প্রোফাইল সুরক্ষিত রাউট
   const isProtected = pathname.startsWith("/product/") || pathname.startsWith("/profile");
 
   if (isProtected && !sessionCookie) {

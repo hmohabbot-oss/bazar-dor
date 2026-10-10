@@ -29,9 +29,9 @@ export default function ProductCard({ product }: { product: Product }) {
         <span
           className={`text-xs font-semibold px-2 py-1 rounded-md ${
             isUp
-              ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/30'
-              : isDown
               ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30'
+              : isDown
+              ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/30'
               : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-800'
           }`}
         >

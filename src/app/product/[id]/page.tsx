@@ -26,9 +26,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const isPriceUp = product.change.dir === "up";
   const isPriceDown = product.change.dir === "down";
   const priceChangeClass = isPriceUp
-    ? "text-rose-600 dark:text-rose-400"
+    ? "text-emerald-600 dark:text-emerald-400"
     : isPriceDown
-      ? "text-emerald-600 dark:text-emerald-400"
+      ? "text-rose-600 dark:text-rose-400"
       : "text-zinc-500 dark:text-zinc-400";
   const priceChangeSymbol = isPriceUp ? "▲" : isPriceDown ? "▼" : "—";
   const priceChangeLabel = isPriceUp

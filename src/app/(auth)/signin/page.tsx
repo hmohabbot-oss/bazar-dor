@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
@@ -10,8 +10,17 @@ import SocialAuthButtons from "@/components/auth/SocialAuthButtons";
 function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirectReason = searchParams.get("reason");
   const requestedCallback = searchParams.get("callbackUrl") || "/";
   const callbackUrl = requestedCallback.startsWith("/") && !requestedCallback.startsWith("//") ? requestedCallback : "/";
+  const hasShownRedirectToast = useRef(false);
+
+  useEffect(() => {
+    if (redirectReason === "auth-required" && !hasShownRedirectToast.current) {
+      hasShownRedirectToast.current = true;
+      toast.error("এই পেজটি দেখতে আগে সাইন ইন করুন");
+    }
+  }, [redirectReason]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -9,6 +9,7 @@ export function proxy(request: NextRequest) {
   if (isProtected && !sessionCookie) {
     const signInUrl = new URL("/signin", request.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
+    signInUrl.searchParams.set("reason", "auth-required");
     return NextResponse.redirect(signInUrl);
   }
 

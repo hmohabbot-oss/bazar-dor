@@ -31,7 +31,7 @@ export default async function HomePage() {
         {priceRisers.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-6">
-              <span className="text-xl">▲</span>
+              <span className="text-xl text-emerald-600">▲</span>
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
                 আজ দাম বেড়েছে
               </h2>
@@ -48,7 +48,7 @@ export default async function HomePage() {
         {priceFallers.length > 0 && (
           <section>
             <div className="flex items-center gap-2 mb-6">
-              <span className="text-xl text-emerald-600">▼</span>
+              <span className="text-xl text-rose-600">▼</span>
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
                 আজ দাম কমেছে
               </h2>

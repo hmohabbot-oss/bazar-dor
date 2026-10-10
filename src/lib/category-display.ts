@@ -1,6 +1,6 @@
 import type { Category } from "@/types";
 
-/** Categories visible in the Figma design; API values override these labels/icons. */
+/** Known categories shown when the categories API is temporarily unavailable. */
 export const fallbackCategories: Category[] = [
   { id: "chal", slug: "chal", nameBn: "চাল", icon: "🍚" },
   { id: "dal", slug: "dal", nameBn: "ডাল", icon: "🫘" },
@@ -8,7 +8,6 @@ export const fallbackCategories: Category[] = [
   { id: "sobji", slug: "sobji", nameBn: "সবজি", icon: "🥬" },
   { id: "mach", slug: "mach", nameBn: "মাছ", icon: "🐟" },
   { id: "mangsho", slug: "mangsho", nameBn: "মাংস", icon: "🍖" },
-  { id: "dim-murgi", slug: "dim-murgi", nameBn: "ডিম-মুরগি", icon: "🍗" },
   { id: "moshla", slug: "moshla", nameBn: "মসলা", icon: "🌶️" },
 ];
 

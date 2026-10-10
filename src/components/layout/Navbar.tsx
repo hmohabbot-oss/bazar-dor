@@ -16,7 +16,7 @@ export default function Navbar() {
 
   useEffect(() => {
     let ignore = false;
-    fetch("https://api.abcz.workers.dev/api/bazardor/categories")
+    fetch("/api/bazardor/categories")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: Category[]) => {
         if (!ignore && Array.isArray(data) && data.length) {

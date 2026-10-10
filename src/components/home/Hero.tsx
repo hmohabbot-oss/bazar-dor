@@ -1,14 +1,22 @@
 import Image from "next/image";
 
 export default function Hero() {
+  const currentDate = new Intl.DateTimeFormat("bn-BD", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Dhaka",
+  }).format(new Date());
+
   return (
     <section className="bg-gradient-to-b from-emerald-50/60 to-transparent dark:from-zinc-900/50 py-10 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
-            <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 rounded-full text-xs font-semibold mb-4">
-              দৈনিক বাজার দর পর্যবেক্ষণ
-            </span>
+            <time className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 rounded-full text-xs font-semibold mb-4">
+              {currentDate}
+            </time>
             <h1 className="text-3xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white leading-tight mb-4">
               নিত্যপ্রয়োজনীয় পণ্যের বাজার দর জানুন এক ক্লিকেই
             </h1>

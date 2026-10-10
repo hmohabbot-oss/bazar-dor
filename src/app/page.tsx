@@ -5,8 +5,12 @@ import ProductCard from "@/components/product/ProductCard";
 import Footer from "@/components/layout/Footer";
 import { getAllProducts } from "@/lib/api";
 
+// Fetch the live API at request time; Vercel's build environment may not reach it.
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
-  const products = await getAllProducts();
+  // Keep the homepage available if the market-data API is temporarily down.
+  const products = await getAllProducts().catch(() => []);
 
   // সেকশন A: আজ দাম বেড়েছে (Top 6 risers)
   const priceRisers = products

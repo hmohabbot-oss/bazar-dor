@@ -3,21 +3,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
+import type { Category } from "@/types";
+import { fallbackCategories } from "@/lib/category-display";
 import toast from "react-hot-toast";
-
-const categories = [
-  { slug: "all", name: "সব পণ্য", icon: "🧺", path: "/" },
-  { slug: "chal", name: "চাল", icon: "🍚", path: "/category/chal" },
-  { slug: "dal", name: "ডাল", icon: "🫘", path: "/category/dal" },
-  { slug: "tel", name: "তেল", icon: "🛢️", path: "/category/tel" },
-  { slug: "sobji", name: "সবজি", icon: "🥬", path: "/category/sobji" },
-  { slug: "mach", name: "মাছ", icon: "🐟", path: "/category/mach" },
-];
 
 export default function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [categories, setCategories] = useState<Category[]>(fallbackCategories);
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("https://api.api-store.workers.dev/api/bazardor/categories")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: Category[]) => {
+        if (!ignore && Array.isArray(data) && data.length) setCategories(data);
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // আজকের বাংলা তারিখ ফরম্যাট
   const todayBn = new Intl.DateTimeFormat("bn-BD", {
@@ -91,12 +99,13 @@ export default function Navbar() {
 
         {/* বটম রো: ক্যাটাগরি মেনু */}
         <nav className="flex items-center gap-2 overflow-x-auto py-2 border-t border-zinc-100 dark:border-zinc-900 no-scrollbar">
-          {categories.map((cat) => {
-            const isActive = pathname === cat.path;
+          {[{ slug: "all", nameBn: "সব পণ্য", icon: "🧺" }, ...categories].map((cat) => {
+            const path = cat.slug === "all" ? "/" : `/category/${cat.slug}`;
+            const isActive = pathname === path;
             return (
               <Link
                 key={cat.slug}
-                href={cat.path}
+                href={path}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
                   isActive
                     ? "bg-emerald-600 text-white shadow-sm"
@@ -104,7 +113,7 @@ export default function Navbar() {
                 }`}
               >
                 <span>{cat.icon}</span>
-                <span>{cat.name}</span>
+                <span>{cat.nameBn}</span>
               </Link>
             );
           })}

@@ -7,18 +7,12 @@ import Footer from "@/components/layout/Footer";
 import ProductCard from "@/components/product/ProductCard";
 import { Product } from "@/types";
 import { sortProducts } from "@/lib/utils";
+import type { Category } from "@/types";
+import { fallbackCategories, categoryName } from "@/lib/category-display";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
-
-const categoryTitles: Record<string, { name: string; icon: string }> = {
-  chal: { name: "চাল", icon: "🍚" },
-  dal: { name: "ডাল", icon: "🫘" },
-  tel: { name: "তেল", icon: "🛢️" },
-  sobji: { name: "সবজি", icon: "🥬" },
-  mach: { name: "মাছ", icon: "🐟" },
-};
 
 export default function CategoryPage({ params }: PageProps) {
   const resolvedParams = use(params);
@@ -28,7 +22,22 @@ export default function CategoryPage({ params }: PageProps) {
   const [loading, setLoading] = useState(true);
   const [sortOption, setSortOption] = useState("default");
 
-  const categoryInfo = categoryTitles[slug];
+  const [categories, setCategories] = useState<Category[]>(fallbackCategories);
+  const category = categories.find((item) => item.slug === slug);
+  const categoryInfo = category ? categoryName(category) : undefined;
+
+  useEffect(() => {
+    let ignore = false;
+    fetch("https://api.api-store.workers.dev/api/bazardor/categories")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: Category[]) => {
+        if (!ignore && Array.isArray(data) && data.length) setCategories(data);
+      })
+      .catch(() => undefined);
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   useEffect(() => {
     let ignore = false;
@@ -58,7 +67,7 @@ export default function CategoryPage({ params }: PageProps) {
     return () => {
       ignore = true;
     };
-  }, [slug, categoryInfo]);
+  }, [slug, Boolean(categoryInfo)]);
 
   // সর্ট করা প্রোডাক্ট তালিকা (C1 Challenge)
   const displayedProducts = sortProducts(products, sortOption);

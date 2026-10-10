@@ -23,6 +23,19 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const minPrice = Math.min(...allMins);
   const maxPrice = Math.max(...allMaxs);
   const avgPrice = Math.round((minPrice + maxPrice) / 2);
+  const isPriceUp = product.change.dir === "up";
+  const isPriceDown = product.change.dir === "down";
+  const priceChangeClass = isPriceUp
+    ? "text-rose-600 dark:text-rose-400"
+    : isPriceDown
+      ? "text-emerald-600 dark:text-emerald-400"
+      : "text-zinc-500 dark:text-zinc-400";
+  const priceChangeSymbol = isPriceUp ? "▲" : isPriceDown ? "▼" : "—";
+  const priceChangeLabel = isPriceUp
+    ? "দাম বেড়েছে"
+    : isPriceDown
+      ? "দাম কমেছে"
+      : "দাম অপরিবর্তিত";
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-50/50 dark:bg-zinc-900/50">
@@ -66,6 +79,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
               {toBnNumber(product.today)} টাকা
             </span>
             <span className="text-xs text-zinc-500 block mt-1">{getUnitBn(product.unit)}</span>
+            <span
+              className={`mt-2 inline-flex items-center gap-1 text-xs font-semibold ${priceChangeClass}`}
+              aria-label={`${priceChangeLabel}, ${toBnNumber(product.change.pct)} শতাংশ`}
+            >
+              <span aria-hidden="true">{priceChangeSymbol}</span>
+              <span>{toBnNumber(product.change.pct)}%</span>
+              <span className="sr-only">{priceChangeLabel}</span>
+            </span>
           </div>
         </div>
 

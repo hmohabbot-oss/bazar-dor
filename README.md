@@ -1,123 +1,154 @@
-# বাজার দর
+# Bazar Dor — Assignment 07
 
-নিত্যপ্রয়োজনীয় পণ্যের দৈনিক বাজারদর এক নজরে দেখার ও পণ্যভিত্তিক দাম তুলনা করার ওয়েব অ্যাপ। ব্যবহারকারীরা পণ্যের তালিকা, ক্যাটাগরি এবং বিস্তারিত বাজারদর দেখতে পারেন; অ্যাকাউন্ট তৈরি ও সাইন ইন করতে পারেন ইমেইল, Google অথবা GitHub দিয়ে।
+**Bazar Dor** is a Bengali-language web application for exploring daily prices of essential commodities. It presents price movements, category-based product listings, and market-level price details in a responsive interface.
 
-**লাইভ সাইট:** [bazar-dor-fq4h.vercel.app](https://bazar-dor-fq4h.vercel.app)
+| Submission link | URL |
+| --- | --- |
+| Live application | [https://bazar-dor-fq4h.vercel.app](https://bazar-dor-fq4h.vercel.app) |
+| Source code | [GitHub repository](https://github.com/hmohabbot-oss/bazar-dor) |
 
-## ফিচার
+## Project overview
 
-- আজ যেসব পণ্যের দাম বেড়েছে বা কমেছে সেগুলোর তালিকা
-- ক্যাটাগরি অনুযায়ী পণ্য ব্রাউজ ও দামের ক্রমানুসারে সাজানো
-- পণ্যের বিস্তারিত ও বাজারভিত্তিক দামের তুলনা
-- Better Auth ও MongoDB দিয়ে ইমেইল/পাসওয়ার্ড authentication
-- Google ও GitHub OAuth sign-in
-- বাংলা interface এবং responsive layout
-- Vercel-এ deployment ও GitHub থেকে স্বয়ংক্রিয় redeploy
+The application helps users review current commodity prices and compare available market data. The home page highlights products whose prices have increased or decreased, followed by the complete product catalogue. Users can browse categories, sort products by price, and open a product page for more detailed market information.
 
-## ব্যবহৃত প্রযুক্তি
+The interface and authentication pages are presented in Bengali. Email and password authentication is supported alongside Google and GitHub sign-in.
 
-- [Next.js](https://nextjs.org/) 16 (App Router) ও React 19
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/) 4
-- [Better Auth](https://www.better-auth.com/)
-- [MongoDB](https://www.mongodb.com/)
-- [Vercel](https://vercel.com/)
+## Implemented features
 
-## লোকাল মেশিনে চালানো
+- Home page sections for products with rising and falling prices
+- Product catalogue with category-based browsing
+- Category listing with low-to-high and high-to-low price sorting
+- Product details with available market-level minimum and maximum prices
+- Bengali labels and Bengali number formatting
+- Responsive layout for desktop and mobile screens
+- Email and password sign-up/sign-in
+- Google and GitHub OAuth sign-in
+- Session and authentication data stored in MongoDB through Better Auth
 
-### ১. Repository clone ও dependency install
+## Technology stack
+
+- **Framework:** Next.js 16 App Router
+- **UI:** React 19, TypeScript, Tailwind CSS 4
+- **Authentication:** Better Auth with the MongoDB adapter
+- **Database:** MongoDB
+- **Product data:** Bazar Dor products API (`api.api-store.workers.dev`)
+- **Hosting:** Vercel
+
+## Application routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Price movements and full product catalogue |
+| `/category/[slug]` | Products in a category, with price sorting |
+| `/product/[id]` | Product and market-level price details |
+| `/signup` | Create an account |
+| `/signin` | Sign in to an account |
+| `/api/auth/[...all]` | Better Auth API endpoints |
+
+## Data and authentication flow
+
+Product and market-price information is requested from the Bazar Dor products API. The home page fetches the product catalogue on the server; the API response is revalidated periodically. Category pages request their category's products from the same API.
+
+Better Auth handles email/password and OAuth authentication. MongoDB stores authentication records and sessions. Google and GitHub OAuth credentials are configured separately in their provider consoles and supplied to the application through environment variables.
+
+## Run locally
+
+### Requirements
+
+- Node.js and npm
+- A MongoDB connection string
+- Google and/or GitHub OAuth credentials if testing social sign-in locally
+
+### Install dependencies
 
 ```bash
-git clone <your-github-repository-url>
+git clone https://github.com/hmohabbot-oss/bazar-dor.git
 cd bazar-dor
 npm install
 ```
 
-### ২. Environment variables তৈরি
+### Configure environment variables
 
-Project root-এ `.env.local` ফাইল বানিয়ে নিচের variable-গুলো যোগ করুন:
+Create `.env.local` in the project root:
 
 ```env
-MONGODB_URI="<your-mongodb-connection-string>"
-BETTER_AUTH_SECRET="<a-long-random-secret>"
+MONGODB_URI="<mongodb-connection-string>"
+BETTER_AUTH_SECRET="<long-random-secret>"
 BETTER_AUTH_URL="http://localhost:3000"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-# Google sign-in চালু করতে দুটোই দিন
+# Optional: configure both values to enable Google sign-in
 GOOGLE_CLIENT_ID="<google-oauth-client-id>"
 GOOGLE_CLIENT_SECRET="<google-oauth-client-secret>"
 
-# GitHub sign-in চালু করতে দুটোই দিন
+# Optional: configure both values to enable GitHub sign-in
 GITHUB_CLIENT_ID="<github-oauth-client-id>"
 GITHUB_CLIENT_SECRET="<github-oauth-client-secret>"
 ```
 
-`MONGODB_URI` ও `BETTER_AUTH_SECRET` আবশ্যক। Social sign-in ব্যবহার না করলে সংশ্লিষ্ট provider-এর দুইটি variable বাদ দিতে পারেন। OAuth চালু করলে Client ID ও Client Secret অবশ্যই একই OAuth application থেকে নেবেন।
-
-`BETTER_AUTH_SECRET` তৈরি করতে Node.js থাকলে চালান:
+`MONGODB_URI`, `BETTER_AUTH_SECRET`, and the two application URL variables are required. OAuth variables are optional; each provider requires its matching Client ID and Client Secret. Generate a random authentication secret with:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-`.env.local` কখনো GitHub-এ commit করবেন না। `.env.local` ফাইলের variable-এ quotation mark ঐচ্ছিক; Vercel-এর Value field-এ মান বসানোর সময় quotation mark দেবেন না।
+Keep `.env.local` and all provider secrets out of source control. The `.env.local` file is for local development; use the actual deployment domain for the URL variables in Vercel.
 
-### ৩. Development server চালু
+### Start the development server
 
 ```bash
 npm run dev
 ```
 
-তারপর [http://localhost:3000](http://localhost:3000) খুলুন।
+Open [http://localhost:3000](http://localhost:3000).
 
 ## OAuth callback configuration
 
-Google ও GitHub sign-in কাজ করাতে provider-এর developer console-এ production domain এবং callback URL যোগ করতে হবে। নিচের URL-গুলো এই repository-এর বর্তমান live domain-এর জন্য। Domain বদলালে `bazar-dor-fq4h.vercel.app` অংশটি নতুন domain দিয়ে প্রতিস্থাপন করুন।
+The production OAuth applications must allow the deployed domain and callback endpoints below. If the Vercel domain changes, update the provider settings and the application URL environment variables to match.
 
-### Google
+### Google OAuth client
 
-Google Cloud Console → **APIs & Services → Credentials** → ব্যবহৃত Web OAuth client:
+In Google Cloud Console, under **APIs & Services → Credentials**, configure the Web application client used by this project:
 
 - **Authorized JavaScript origin:** `https://bazar-dor-fq4h.vercel.app`
 - **Authorized redirect URI:** `https://bazar-dor-fq4h.vercel.app/api/auth/callback/google`
 
-### GitHub
+### GitHub OAuth App
 
-GitHub → **Settings → Developer settings → OAuth Apps** → ব্যবহৃত OAuth App:
+In GitHub **Settings → Developer settings → OAuth Apps**, configure:
 
 - **Homepage URL:** `https://bazar-dor-fq4h.vercel.app`
 - **Authorization callback URL:** `https://bazar-dor-fq4h.vercel.app/api/auth/callback/github`
 
-Local OAuth পরীক্ষা করতে provider-এ আলাদা local URL যোগ করুন: origin/homepage `http://localhost:3000` এবং callback `http://localhost:3000/api/auth/callback/google` বা `http://localhost:3000/api/auth/callback/github`।
+## Deployment
 
-## Vercel-এ deploy
+The application is deployed on Vercel and connected to its GitHub repository. Configure the required environment variables for the Production environment before deploying. Include OAuth Client ID/Secret pairs to enable the corresponding providers. `NEXT_PUBLIC_APP_URL` is a public configuration value; `BETTER_AUTH_SECRET` and OAuth Client Secrets must remain private.
 
-1. GitHub repository Vercel-এ import করুন; Framework Preset `Next.js` এবং Root Directory `./` রাখুন।
-2. Project-এর **Settings → Environment Variables**-এ `MONGODB_URI`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL` যোগ করুন। OAuth ব্যবহারের জন্য provider-এর Client ID/Secret-ও যোগ করুন।
-3. `BETTER_AUTH_URL` এবং `NEXT_PUBLIC_APP_URL`-এ Vercel-এর production domain দিন, যেমন `https://bazar-dor-fq4h.vercel.app`। `NEXT_PUBLIC_APP_URL`-এর Type `Config` রাখুন।
-4. Environment-এ `Production` নির্বাচন করে **Deploy** করুন। Variable পরিবর্তনের পর নতুন deployment বা **Redeploy** লাগবে।
-5. MongoDB Atlas ব্যবহার করলে Atlas-এর Network Access থেকে deployment-কে database-এ সংযোগের অনুমতি দিন।
-
-GitHub-এর সংযুক্ত branch-এ নতুন commit push করলে Vercel সাধারণত স্বয়ংক্রিয়ভাবে নতুন deployment তৈরি করে।
-
-## দরকারি command
-
-```bash
-npm run dev     # লোকাল development server
-npm run lint    # ESLint
-npm run build   # production build
-npm run start   # production build লোকালি চালানো
-```
+After changing environment variables, create a new deployment so the running application receives the updated configuration. MongoDB Atlas must allow the deployed application to connect to the database.
 
 ## Project structure
 
 ```text
 src/
-├── app/                 # Next.js routes ও pages
-│   ├── (auth)/          # Sign-in ও sign-up
-│   ├── api/auth/        # Better Auth API route
-│   ├── category/        # Category page
-│   └── product/         # Product detail page
-├── components/          # Shared UI components
-└── lib/                 # Auth ও database configuration
+├── app/
+│   ├── (auth)/             # Sign-in and sign-up pages
+│   ├── api/auth/           # Better Auth route handler
+│   ├── category/[slug]/    # Category product listing
+│   ├── product/[id]/       # Product details
+│   └── page.tsx            # Home page
+├── components/
+│   ├── auth/               # Shared social sign-in buttons
+│   ├── home/               # Home page sections
+│   ├── layout/             # Navigation, ticker, and footer
+│   └── product/            # Product cards
+└── lib/                    # API, authentication, database, and utilities
 ```
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run lint` | Run ESLint |
+| `npm run build` | Create a production build |
+| `npm run start` | Serve the production build locally |

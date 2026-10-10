@@ -6,7 +6,7 @@ Bazar Dor is a Bengali-language web app for checking everyday commodity prices. 
 
 - **Live app:** [bazar-dor-fq4h.vercel.app](https://bazar-dor-fq4h.vercel.app/)
 - **GitHub:** [hmohabbot-oss/bazar-dor](https://github.com/hmohabbot-oss/bazar-dor)
-- **Price data API:** [api.abcz.workers.dev/api/bazardor](https://api.abcz.workers.dev/api/bazardor)
+- **Price data API:** [openapi.programming-hero.com/api/bazardor](https://openapi.programming-hero.com/api/bazardor)
 
 ## What the app does
 
@@ -44,7 +44,7 @@ Bazar Dor is a Bengali-language web app for checking everyday commodity prices. 
 
 ## Data flow
 
-Product and category information comes from `https://api.abcz.workers.dev/api/bazardor`. The home page requests all products; category pages request products with the `category` query parameter; product pages request one product by ID. Authentication data is stored separately in MongoDB.
+Product and category information comes from `https://openapi.programming-hero.com/api/bazardor`. The home page requests all products; category pages request products with the `category` query parameter; product pages request one product by ID. Authentication data is stored separately in MongoDB.
 
 ## Run the project locally
 

@@ -32,7 +32,7 @@ export default function CategoryPage({ params }: PageProps) {
 
   useEffect(() => {
     let ignore = false;
-    fetch("https://api.api-store.workers.dev/api/bazardor/categories")
+    fetch("https://api.abz.workers.dev/api/bazardor/categories")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: Category[]) => {
         if (!ignore && Array.isArray(data) && data.length) {
@@ -55,24 +55,11 @@ export default function CategoryPage({ params }: PageProps) {
       try {
         setLoading(true);
         const res = await fetch(
-          "https://api.api-store.workers.dev/api/bazardor/products",
+          `https://api.abz.workers.dev/api/bazardor/products?category=${encodeURIComponent(slug)}`,
         );
         if (res.ok) {
           const data: Product[] = await res.json();
-          const matchedCategory = categories.find((item) => item.slug === slug);
-          const categoryKeys = new Set(
-            [matchedCategory?.id, matchedCategory?.slug, slug]
-              .filter(Boolean)
-              .map((value) => String(value).toLowerCase()),
-          );
-          const filteredProducts = data.filter((product) => {
-            const productCategory = String(product.category).toLowerCase();
-            return (
-              categoryKeys.has(productCategory) ||
-              product.categoryNameBn === matchedCategory?.nameBn
-            );
-          });
-          if (!ignore) setProducts(filteredProducts);
+          if (!ignore) setProducts(data);
         } else {
           if (!ignore) setProducts([]);
         }

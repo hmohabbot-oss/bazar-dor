@@ -1,6 +1,6 @@
 import { Product, Category } from '@/types';
 
-const BASE_URL = 'https://api.api-store.workers.dev/api/bazardor';
+const BASE_URL = 'https://api.abz.workers.dev/api/bazardor';
 
 export async function getAllProducts(): Promise<Product[]> {
   const res = await fetch(`${BASE_URL}/products`, { next: { revalidate: 60 } });

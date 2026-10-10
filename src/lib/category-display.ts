@@ -15,3 +15,18 @@ export const fallbackCategories: Category[] = [
 export function categoryName(category: Category) {
   return { name: category.nameBn, icon: category.icon };
 }
+
+export function mergeCategories(apiCategories: Category[]): Category[] {
+  const remaining = [...apiCategories];
+  const known = fallbackCategories.map((fallback) => {
+    const index = remaining.findIndex(
+      (category) =>
+        category.slug === fallback.slug || category.nameBn === fallback.nameBn,
+    );
+    if (index < 0) return fallback;
+    const [apiCategory] = remaining.splice(index, 1);
+    return { ...fallback, ...apiCategory };
+  });
+
+  return [...known, ...remaining];
+}

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "@/lib/auth-client";
 import type { Category } from "@/types";
-import { fallbackCategories } from "@/lib/category-display";
+import { fallbackCategories, mergeCategories } from "@/lib/category-display";
 import toast from "react-hot-toast";
 
 export default function Navbar() {
@@ -19,7 +19,9 @@ export default function Navbar() {
     fetch("https://api.api-store.workers.dev/api/bazardor/categories")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: Category[]) => {
-        if (!ignore && Array.isArray(data) && data.length) setCategories(data);
+        if (!ignore && Array.isArray(data) && data.length) {
+          setCategories(mergeCategories(data));
+        }
       })
       .catch(() => undefined);
     return () => {

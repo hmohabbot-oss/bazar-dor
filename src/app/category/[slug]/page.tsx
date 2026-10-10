@@ -8,7 +8,11 @@ import ProductCard from "@/components/product/ProductCard";
 import { Product } from "@/types";
 import { sortProducts } from "@/lib/utils";
 import type { Category } from "@/types";
-import { fallbackCategories, categoryName } from "@/lib/category-display";
+import {
+  fallbackCategories,
+  categoryName,
+  mergeCategories,
+} from "@/lib/category-display";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -31,7 +35,9 @@ export default function CategoryPage({ params }: PageProps) {
     fetch("https://api.api-store.workers.dev/api/bazardor/categories")
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data: Category[]) => {
-        if (!ignore && Array.isArray(data) && data.length) setCategories(data);
+        if (!ignore && Array.isArray(data) && data.length) {
+          setCategories(mergeCategories(data));
+        }
       })
       .catch(() => undefined);
     return () => {
@@ -49,11 +55,24 @@ export default function CategoryPage({ params }: PageProps) {
       try {
         setLoading(true);
         const res = await fetch(
-          `https://api.api-store.workers.dev/api/bazardor/products?category=${slug}`
+          "https://api.api-store.workers.dev/api/bazardor/products",
         );
         if (res.ok) {
-          const data = await res.json();
-          if (!ignore) setProducts(data);
+          const data: Product[] = await res.json();
+          const matchedCategory = categories.find((item) => item.slug === slug);
+          const categoryKeys = new Set(
+            [matchedCategory?.id, matchedCategory?.slug, slug]
+              .filter(Boolean)
+              .map((value) => String(value).toLowerCase()),
+          );
+          const filteredProducts = data.filter((product) => {
+            const productCategory = String(product.category).toLowerCase();
+            return (
+              categoryKeys.has(productCategory) ||
+              product.categoryNameBn === matchedCategory?.nameBn
+            );
+          });
+          if (!ignore) setProducts(filteredProducts);
         } else {
           if (!ignore) setProducts([]);
         }
@@ -67,7 +86,7 @@ export default function CategoryPage({ params }: PageProps) {
     return () => {
       ignore = true;
     };
-  }, [slug, Boolean(categoryInfo)]);
+  }, [slug, category?.id, category?.nameBn]);
 
   // সর্ট করা প্রোডাক্ট তালিকা (C1 Challenge)
   const displayedProducts = sortProducts(products, sortOption);

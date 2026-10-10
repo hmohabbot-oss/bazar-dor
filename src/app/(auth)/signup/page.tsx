@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import SocialAuthButtons from "@/components/auth/SocialAuthButtons";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -131,22 +132,10 @@ export default function SignUpPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleSocialSignUp("google")}
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800 transition cursor-pointer"
-          >
-            <span>Google</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSocialSignUp("github")}
-            className="flex items-center justify-center gap-2 py-2.5 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800 transition cursor-pointer"
-          >
-            <span>GitHub</span>
-          </button>
-        </div>
+        <SocialAuthButtons
+          onGoogleClick={() => handleSocialSignUp("google")}
+          onGitHubClick={() => handleSocialSignUp("github")}
+        />
 
         <p className="text-center text-xs text-zinc-500 mt-6">
           ইতিমধ্যে অ্যাকাউন্ট আছে?{" "}

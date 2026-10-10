@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import SocialAuthButtons from "@/components/auth/SocialAuthButtons";
 
 function SignInForm() {
   const router = useRouter();
@@ -118,22 +119,10 @@ function SignInForm() {
           </span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleSocialSignIn("google")}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
-          >
-            <span>Google</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleSocialSignIn("github")}
-            className="flex items-center justify-center gap-2 py-2 px-3 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
-          >
-            <span>GitHub</span>
-          </button>
-        </div>
+        <SocialAuthButtons
+          onGoogleClick={() => handleSocialSignIn("google")}
+          onGitHubClick={() => handleSocialSignIn("github")}
+        />
 
         <p className="text-center text-xs text-zinc-500 mt-6">
           অ্যাকাউন্ট নেই?{" "}

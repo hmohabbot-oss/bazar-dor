@@ -1,65 +1,60 @@
 # Bazar Dor — Assignment 07
 
-**Bazar Dor** is a Bengali-language web application for exploring daily prices of essential commodities. It presents price movements, category-based product listings, and market-level price details in a responsive interface.
+Bazar Dor is a Bengali-language web app for checking everyday commodity prices. It brings category browsing, daily price movement, and market-level comparisons together in one place.
 
-| Submission link | URL |
+## Project links
+
+- **Live app:** [bazar-dor-fq4h.vercel.app](https://bazar-dor-fq4h.vercel.app/)
+- **GitHub:** [hmohabbot-oss/bazar-dor](https://github.com/hmohabbot-oss/bazar-dor)
+- **Price data API:** [api.abcz.workers.dev/api/bazardor](https://api.abcz.workers.dev/api/bazardor)
+
+## What the app does
+
+- Shows the full product list and highlights products whose prices went up or down.
+- Lets visitors browse products by category and sort a category by price.
+- Displays each product's current price, change direction and percentage, and available market prices.
+- Provides a Bengali interface with responsive layouts and Bengali number formatting.
+- Supports email/password accounts and optional Google and GitHub sign-in.
+- Keeps authentication users and sessions in MongoDB through Better Auth.
+
+## Technology
+
+| Area | Tools |
 | --- | --- |
-| Live application | [https://bazar-dor-fq4h.vercel.app](https://bazar-dor-fq4h.vercel.app) |
-| Source code | [GitHub repository](https://github.com/hmohabbot-oss/bazar-dor) |
+| Web framework | Next.js 16 App Router |
+| UI and language | React 19, TypeScript |
+| Styling | Tailwind CSS 4 |
+| Authentication | Better Auth, MongoDB adapter |
+| Database | MongoDB |
+| Product data | Bazar Dor API |
+| Hosting | Vercel |
 
-## Project overview
+## Pages
 
-The application helps users review current commodity prices and compare available market data. The home page highlights products whose prices have increased or decreased, followed by the complete product catalogue. Users can browse categories, sort products by price, and open a product page for more detailed market information.
-
-The interface and authentication pages are presented in Bengali. Email and password authentication is supported alongside Google and GitHub sign-in.
-
-## Implemented features
-
-- Home page sections for products with rising and falling prices
-- Product catalogue with category-based browsing
-- Category listing with low-to-high and high-to-low price sorting
-- Product details with available market-level minimum and maximum prices
-- Bengali labels and Bengali number formatting
-- Responsive layout for desktop and mobile screens
-- Email and password sign-up/sign-in
-- Google and GitHub OAuth sign-in
-- Session and authentication data stored in MongoDB through Better Auth
-
-## Technology stack
-
-- **Framework:** Next.js 16 App Router
-- **UI:** React 19, TypeScript, Tailwind CSS 4
-- **Authentication:** Better Auth with the MongoDB adapter
-- **Database:** MongoDB
-- **Product data:** Bazar Dor products API (`api.api-store.workers.dev`)
-- **Hosting:** Vercel
-
-## Application routes
-
-| Route | Purpose |
+| URL | What it contains |
 | --- | --- |
-| `/` | Price movements and full product catalogue |
-| `/category/[slug]` | Products in a category, with price sorting |
-| `/product/[id]` | Product and market-level price details |
-| `/signup` | Create an account |
-| `/signin` | Sign in to an account |
-| `/api/auth/[...all]` | Better Auth API endpoints |
+| `/` | Daily price movement, category navigation, and all products |
+| `/category/[slug]` | Products in one category and price sorting |
+| `/product/[id]` | Product price movement and market-level details |
+| `/signup` | Email or social account creation |
+| `/signin` | Email or social sign-in |
+| `/profile` | Signed-in user's profile |
+| `/profile/update` | Profile editing |
+| `/api/auth/[...all]` | Better Auth API handler |
 
-## Data and authentication flow
+## Data flow
 
-Product and market-price information is requested from the Bazar Dor products API. The home page fetches the product catalogue on the server; the API response is revalidated periodically. Category pages request their category's products from the same API.
+Product and category information comes from `https://api.abcz.workers.dev/api/bazardor`. The home page requests all products; category pages request products with the `category` query parameter; product pages request one product by ID. Authentication data is stored separately in MongoDB.
 
-Better Auth handles email/password and OAuth authentication. MongoDB stores authentication records and sessions. Google and GitHub OAuth credentials are configured separately in their provider consoles and supplied to the application through environment variables.
-
-## Run locally
+## Run the project locally
 
 ### Requirements
 
 - Node.js and npm
-- A MongoDB connection string
-- Google and/or GitHub OAuth credentials if testing social sign-in locally
+- A MongoDB database and connection URI
+- OAuth app credentials if you want to try Google or GitHub sign-in locally
 
-### Install dependencies
+### Install
 
 ```bash
 git clone https://github.com/hmohabbot-oss/bazar-dor.git
@@ -67,32 +62,32 @@ cd bazar-dor
 npm install
 ```
 
-### Configure environment variables
+### Add local environment variables
 
-Create `.env.local` in the project root:
+Create a `.env.local` file in the project root:
 
 ```env
-MONGODB_URI="<mongodb-connection-string>"
-BETTER_AUTH_SECRET="<long-random-secret>"
-BETTER_AUTH_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+MONGODB_URI=<your-mongodb-connection-string>
+BETTER_AUTH_SECRET=<your-long-random-secret>
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Optional: configure both values to enable Google sign-in
-GOOGLE_CLIENT_ID="<google-oauth-client-id>"
-GOOGLE_CLIENT_SECRET="<google-oauth-client-secret>"
+# Optional: add both values to enable Google sign-in
+GOOGLE_CLIENT_ID=<google-oauth-client-id>
+GOOGLE_CLIENT_SECRET=<google-oauth-client-secret>
 
-# Optional: configure both values to enable GitHub sign-in
-GITHUB_CLIENT_ID="<github-oauth-client-id>"
-GITHUB_CLIENT_SECRET="<github-oauth-client-secret>"
+# Optional: add both values to enable GitHub sign-in
+GITHUB_CLIENT_ID=<github-oauth-client-id>
+GITHUB_CLIENT_SECRET=<github-oauth-client-secret>
 ```
 
-`MONGODB_URI`, `BETTER_AUTH_SECRET`, and the two application URL variables are required. OAuth variables are optional; each provider requires its matching Client ID and Client Secret. Generate a random authentication secret with:
+Generate a random `BETTER_AUTH_SECRET` with:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
-Keep `.env.local` and all provider secrets out of source control. The `.env.local` file is for local development; use the actual deployment domain for the URL variables in Vercel.
+Keep `.env.local` and all secrets private. Never commit them to GitHub. In Vercel, set the URL variables to the production domain. OAuth values can be omitted when only email/password authentication is needed.
 
 ### Start the development server
 
@@ -102,53 +97,61 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## OAuth callback configuration
+## OAuth callback URLs
 
-The production OAuth applications must allow the deployed domain and callback endpoints below. If the Vercel domain changes, update the provider settings and the application URL environment variables to match.
+Use the same domain configured in the app's production environment variables.
 
-### Google OAuth client
+**Google Cloud Console** — create or edit a Web OAuth client:
 
-In Google Cloud Console, under **APIs & Services → Credentials**, configure the Web application client used by this project:
+- Authorized JavaScript origin: `https://bazar-dor-fq4h.vercel.app`
+- Authorized redirect URI: `https://bazar-dor-fq4h.vercel.app/api/auth/callback/google`
 
-- **Authorized JavaScript origin:** `https://bazar-dor-fq4h.vercel.app`
-- **Authorized redirect URI:** `https://bazar-dor-fq4h.vercel.app/api/auth/callback/google`
+**GitHub OAuth App** — under **Settings → Developer settings → OAuth Apps**:
 
-### GitHub OAuth App
+- Homepage URL: `https://bazar-dor-fq4h.vercel.app`
+- Authorization callback URL: `https://bazar-dor-fq4h.vercel.app/api/auth/callback/github`
 
-In GitHub **Settings → Developer settings → OAuth Apps**, configure:
+If the production domain changes, update these provider settings and the Vercel URL variables to match.
 
-- **Homepage URL:** `https://bazar-dor-fq4h.vercel.app`
-- **Authorization callback URL:** `https://bazar-dor-fq4h.vercel.app/api/auth/callback/github`
+## Deploy on Vercel
 
-## Deployment
+The GitHub repository is connected to Vercel. Push changes to the configured production branch to start a deployment. Add the required environment variables in **Project Settings → Environment Variables** and make sure the MongoDB deployment allows connections from the app. A change to environment variables requires a new deployment before the running app can use it.
 
-The application is deployed on Vercel and connected to its GitHub repository. Configure the required environment variables for the Production environment before deploying. Include OAuth Client ID/Secret pairs to enable the corresponding providers. `NEXT_PUBLIC_APP_URL` is a public configuration value; `BETTER_AUTH_SECRET` and OAuth Client Secrets must remain private.
+## React concepts used in this project
 
-After changing environment variables, create a new deployment so the running application receives the updated configuration. MongoDB Atlas must allow the deployed application to connect to the database.
+### 1. Why use JSX?
 
-## Project structure
+JSX describes the page structure inside React components. For example, `ProductCard` combines a product name, price, and price-change badge in one reusable component instead of repeating that markup for every item.
 
-```text
-src/
-├── app/
-│   ├── (auth)/             # Sign-in and sign-up pages
-│   ├── api/auth/           # Better Auth route handler
-│   ├── category/[slug]/    # Category product listing
-│   ├── product/[id]/       # Product details
-│   └── page.tsx            # Home page
-├── components/
-│   ├── auth/               # Shared social sign-in buttons
-│   ├── home/               # Home page sections
-│   ├── layout/             # Navigation, ticker, and footer
-│   └── product/            # Product cards
-└── lib/                    # API, authentication, database, and utilities
-```
+### 2. How are props and state different?
 
-## Available scripts
+Props carry data into a component. `ProductCard` receives a `product` prop from the page that renders it. State is data that can change while a component is being used; the category page stores the selected sorting option as state.
 
-| Command | Description |
+### 3. Where does `useState` help here?
+
+The category page uses `useState` to keep the selected sort order and the fetched product list. When either changes, React renders the updated list.
+
+### 4. What does `useEffect` do in the category flow?
+
+`useEffect` runs browser-side work after the page renders. The category page uses it to load the API's category and product data when its slug changes.
+
+### 5. Why does a mapped product need a `key`?
+
+A stable key lets React associate each rendered card with its product when the list changes. Product cards use the API's product ID as their key.
+
+### 6. Where is conditional rendering used?
+
+The home page only renders the “price increased” and “price decreased” sections when each group has products. Category pages also show loading, empty, or product-grid content according to the current state.
+
+### 7. How does information move between components?
+
+Pages fetch or prepare product data and pass each product to `ProductCard` through props. In the category page, a change to the sort selector updates state; React then renders the products in the selected order.
+
+## Available commands
+
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the development server |
+| `npm run dev` | Start local development |
 | `npm run lint` | Run ESLint |
 | `npm run build` | Create a production build |
-| `npm run start` | Serve the production build locally |
+| `npm run start` | Serve a production build locally |

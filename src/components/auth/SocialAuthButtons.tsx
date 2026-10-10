@@ -1,5 +1,3 @@
-import { Github } from "lucide-react";
-
 type SocialAuthButtonsProps = {
   onGoogleClick: () => void;
   onGitHubClick: () => void;
@@ -47,7 +45,13 @@ export default function SocialAuthButtons({
         onClick={onGitHubClick}
         className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-900 bg-zinc-900 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:focus-visible:ring-offset-zinc-900"
       >
-        <Github aria-hidden="true" size={18} strokeWidth={2.2} />
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="h-[18px] w-[18px] fill-current"
+        >
+          <path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 .1.77 2.4 3.48 1.7.1-.73.4-1.23.7-1.51-2.5-.29-5.13-1.25-5.13-5.56 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.44.11-3 0 0 .95-.3 3.1 1.16a10.78 10.78 0 0 1 5.64 0c2.15-1.46 3.1-1.16 3.1-1.16.61 1.56.23 2.71.11 3 .72.79 1.16 1.8 1.16 3.03 0 4.32-2.63 5.27-5.14 5.55.4.35.75 1.03.75 2.08v3.1c0 .3.2.65.78.54A11.25 11.25 0 0 0 12 .75Z" />
+        </svg>
         <span>GitHub</span>
       </button>
     </div>

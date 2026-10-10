@@ -15,9 +15,9 @@ export default function PriceTicker({ products }: { products: Product[] }) {
             <span
               className={`text-xs px-1.5 py-0.5 rounded font-bold ${
                 item.change.dir === 'up'
-                  ? 'bg-emerald-100 text-emerald-600'
-                  : item.change.dir === 'down'
                   ? 'bg-rose-100 text-rose-600'
+                  : item.change.dir === 'down'
+                  ? 'bg-emerald-100 text-emerald-600'
                   : 'bg-zinc-100 text-zinc-500'
               }`}
             >

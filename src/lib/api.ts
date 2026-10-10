@@ -15,9 +15,19 @@ export async function getProductsByCategory(category: string): Promise<Product[]
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
-  const res = await fetch(`${BASE_URL}/products/${id}`, { next: { revalidate: 60 } });
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/products/${id}`, { next: { revalidate: 60 } });
+    if (res.ok) return res.json();
+  } catch {
+    // Fall back to the collection endpoint if the single-product route is unavailable.
+  }
+
+  try {
+    const products = await getAllProducts();
+    return products.find((product) => String(product.id) === id) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getCategories(): Promise<Category[]> {
